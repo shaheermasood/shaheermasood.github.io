@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Writing by Shaheer Masood — thoughts on data, systems, and design.">
+    <title>Writing — Shaheer Masood</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <a href="../index.html" class="pill">← Home</a>
+    </nav>
+
+    <!-- Header -->
+    <header class="hero-header">
+        <h1 class="hero-header__title">Writing</h1>
+        <div class="hero-header__meta">
+            <span class="label-paren">(All Posts)</span>
+        </div>
+    </header>
+
+    <hr class="rule rule--heavy">
+
+    <!-- Post List -->
+    <section class="writing-list">
+        <div id="posts-container"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <span class="footer__text">&copy; 2025 Shaheer Masood</span>
+        <span class="footer__text">(Chicago, IL)</span>
+    </footer>
+
+    <script>
+        async function loadPosts() {
+            const container = document.getElementById('posts-container');
+            try {
+                const response = await fetch('posts.json');
+                const posts = await response.json();
+
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                if (posts.length === 0) {
+                    container.innerHTML = '<p class="writing-empty">No posts yet. Check back soon.</p>';
+                    return;
+                }
+
+                container.innerHTML = posts.map(post => {
+                    const date = new Date(post.date + 'T00:00:00').toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                    return `
+                        <article class="post-item">
+                            <span class="label-paren post-item__date">(${date})</span>
+                            <div class="post-item__content">
+                                <h2 class="post-item__title">
+                                    <a href="post.html?post=${encodeURIComponent(post.slug)}">${post.title}</a>
+                                </h2>
+                                <p class="post-item__description">${post.description}</p>
+                            </div>
+                            <a href="post.html?post=${encodeURIComponent(post.slug)}" class="post-item__arrow arrow-indicator" aria-hidden="true">↘</a>
+                        </article>
+                    `;
+                }).join('');
+            } catch (err) {
+                container.innerHTML = '<p class="writing-empty">Could not load posts.</p>';
+            }
+        }
+
+        loadPosts();
+    </script>
+
+</body>
+</html>

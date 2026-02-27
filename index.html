@@ -15,6 +15,7 @@
     <!-- Navigation -->
     <nav class="nav">
        <!-- <span class="pill pill--counter">3</span> -->
+        <a href="blog/index.html" class="pill pill--ghost">Writing</a>
         <a href="#about" class="pill">Menu</a>
     </nav>
 
@@ -125,11 +126,50 @@
         </div>
     </section>
 
+    <!-- Writing Section -->
+    <section class="writing-section" id="writing">
+        <div class="writing-section__header">
+            <div class="writing-section__title-row">
+                <span class="label-paren">(Writing)</span>
+                <span class="arrow-indicator">↘</span>
+            </div>
+            <a href="blog/index.html" class="pill">All Posts</a>
+        </div>
+        <div class="writing-section__posts" id="writing-preview"></div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <span class="footer__text">&copy; 2025 Shaheer Masood</span>
         <span class="footer__text">(Chicago, IL)</span>
     </footer>
+
+    <script>
+        (async function () {
+            const container = document.getElementById('writing-preview');
+            try {
+                const res = await fetch('blog/posts.json');
+                const posts = await res.json();
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const recent = posts.slice(0, 3);
+                if (recent.length === 0) return;
+                container.innerHTML = recent.map(post => {
+                    const date = new Date(post.date + 'T00:00:00').toLocaleDateString('en-US', {
+                        year: 'numeric', month: 'long', day: 'numeric'
+                    });
+                    return `
+                        <a href="blog/post.html?post=${encodeURIComponent(post.slug)}" class="writing-preview-item">
+                            <div class="writing-preview-item__meta">
+                                <span class="writing-preview-item__title">${post.title}</span>
+                                <span class="label-paren writing-preview-item__date">(${date})</span>
+                            </div>
+                            <span class="writing-preview-item__arrow arrow-indicator" aria-hidden="true">↘</span>
+                        </a>
+                    `;
+                }).join('');
+            } catch (e) { /* silently skip if fetch fails */ }
+        })();
+    </script>
 
 </body>
 </html>
