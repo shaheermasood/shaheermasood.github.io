@@ -34,15 +34,25 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <span class="footer__text">&copy; 2025 Shaheer Masood</span>
+        <span class="footer__text">&copy; 2026 Shaheer Masood</span>
         <span class="footer__text">(Chicago, IL)</span>
     </footer>
 
     <script>
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         async function loadPosts() {
             const container = document.getElementById('posts-container');
             try {
                 const response = await fetch('posts.json');
+                if (!response.ok) throw new Error('Could not load posts');
                 const posts = await response.json();
 
                 posts.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -61,9 +71,9 @@
                             <span class="label-paren post-item__date">(${date})</span>
                             <div class="post-item__content">
                                 <h2 class="post-item__title">
-                                    <a href="post.html?post=${encodeURIComponent(post.slug)}">${post.title}</a>
+                                    <a href="post.html?post=${encodeURIComponent(post.slug)}">${escapeHtml(post.title)}</a>
                                 </h2>
-                                <p class="post-item__description">${post.description}</p>
+                                <p class="post-item__description">${escapeHtml(post.description)}</p>
                             </div>
                             <a href="post.html?post=${encodeURIComponent(post.slug)}" class="post-item__arrow arrow-indicator" aria-hidden="true">↘</a>
                         </article>
