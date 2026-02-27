@@ -25,11 +25,20 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <span class="footer__text">&copy; 2025 Shaheer Masood</span>
+        <span class="footer__text">&copy; 2026 Shaheer Masood</span>
         <span class="footer__text">(Chicago, IL)</span>
     </footer>
 
     <script>
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         async function loadPost() {
             const params = new URLSearchParams(window.location.search);
             const slug = params.get('post');
@@ -43,23 +52,28 @@
             try {
                 // Load post metadata from manifest
                 const metaRes = await fetch('posts.json');
+                if (!metaRes.ok) throw new Error('Could not load post manifest');
                 const posts = await metaRes.json();
-                const meta = posts.find(p => p.slug === slug);
 
-                // Load the markdown source
-                const mdRes = await fetch(slug + '.md');
+                // Validate slug against the whitelist in posts.json to prevent path traversal
+                const meta = posts.find(p => p.slug === slug);
+                if (!meta) {
+                    main.innerHTML = '<p class="post-page__error">Post not found. <a href="index.html">Back to writing.</a></p>';
+                    return;
+                }
+
+                // Load the markdown source using the validated slug from the manifest
+                const mdRes = await fetch(meta.slug + '.md');
                 if (!mdRes.ok) throw new Error('Not found');
                 const markdown = await mdRes.text();
 
-                const date = meta
-                    ? new Date(meta.date + 'T00:00:00').toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                      })
-                    : '';
-                const title = meta ? meta.title : slug;
+                const date = new Date(meta.date + 'T00:00:00').toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const title = escapeHtml(meta.title);
 
-                // Update page title
-                document.title = title + ' — Shaheer Masood';
+                // Update page title (textContent-safe, no escaping needed)
+                document.title = meta.title + ' — Shaheer Masood';
 
                 main.innerHTML = `
                     <article class="post-page">

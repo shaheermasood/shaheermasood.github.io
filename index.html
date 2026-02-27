@@ -27,7 +27,7 @@
             <span class="label-paren">(Chicago, IL)</span>
             <div class="hero-header__scroll">
                 <span>Scroll Down</span>
-                <span class="arrow-indicator">↘</span>
+                <span class="arrow-indicator" aria-hidden="true">↘</span>
             </div>
         </div>
     </header>
@@ -70,7 +70,7 @@
     <section class="services">
         <div class="services__header">
             <span class="label-paren">(What I do)</span>
-            <span class="arrow-indicator">↘</span>
+            <span class="arrow-indicator" aria-hidden="true">↘</span>
         </div>
         <div class="services__grid">
             <div class="service-item">
@@ -104,7 +104,7 @@
     <section class="services" id="projects">
         <div class="services__header">
             <span class="label-paren">(Selected Projects)</span>
-            <span class="arrow-indicator">↘</span>
+            <span class="arrow-indicator" aria-hidden="true">↘</span>
         </div>
         <div class="services__grid">
             <div class="service-item">
@@ -131,7 +131,7 @@
         <div class="writing-section__header">
             <div class="writing-section__title-row">
                 <span class="label-paren">(Writing)</span>
-                <span class="arrow-indicator">↘</span>
+                <span class="arrow-indicator" aria-hidden="true">↘</span>
             </div>
             <a href="blog/index.html" class="pill">All Posts</a>
         </div>
@@ -140,15 +140,25 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <span class="footer__text">&copy; 2025 Shaheer Masood</span>
+        <span class="footer__text">&copy; 2026 Shaheer Masood</span>
         <span class="footer__text">(Chicago, IL)</span>
     </footer>
 
     <script>
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         (async function () {
             const container = document.getElementById('writing-preview');
             try {
                 const res = await fetch('blog/posts.json');
+                if (!res.ok) return;
                 const posts = await res.json();
                 posts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 const recent = posts.slice(0, 3);
@@ -160,7 +170,7 @@
                     return `
                         <a href="blog/post.html?post=${encodeURIComponent(post.slug)}" class="writing-preview-item">
                             <div class="writing-preview-item__meta">
-                                <span class="writing-preview-item__title">${post.title}</span>
+                                <span class="writing-preview-item__title">${escapeHtml(post.title)}</span>
                                 <span class="label-paren writing-preview-item__date">(${date})</span>
                             </div>
                             <span class="writing-preview-item__arrow arrow-indicator" aria-hidden="true">↘</span>
