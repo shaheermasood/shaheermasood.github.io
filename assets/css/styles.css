@@ -197,13 +197,22 @@ a, button, .pill, .social-icon {
     color: var(--color-text-muted);
 }
 
-/* ─── Hero Image ─── */
+/* ─── Hero Image / Particle Canvas ─── */
 .hero-image {
     width: 100%;
     aspect-ratio: 16 / 7;
     background: var(--color-bg-image);
     display: block;
+    position: relative;
+    overflow: hidden;
     animation: fadeInImage 0.5s var(--ease-out) 0.15s both;
+}
+
+.hero-image canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
 }
 
 .hero-image img {

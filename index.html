@@ -32,8 +32,10 @@
         </div>
     </header>
 
-    <!-- Hero Image -->
-    <div class="hero-image" role="img" aria-label="Hero image placeholder"></div>
+    <!-- Hero Image — Particle Network -->
+    <div class="hero-image" aria-hidden="true">
+        <canvas id="particle-canvas"></canvas>
+    </div>
 
     <!-- About Section -->
     <section id="about" class="about">
@@ -144,6 +146,7 @@
         <span class="footer__text">(Chicago, IL)</span>
     </footer>
 
+    <script src="assets/js/particle-network.js"></script>
     <script>
         function escapeHtml(str) {
             return String(str)
