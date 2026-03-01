@@ -105,6 +105,7 @@
 
     /* ── Main module ────────────────────────────────────────────── */
     var canvas, ctx, particles, animId, resizeObserver;
+    var canvasW = 0, canvasH = 0;  // logical (CSS-pixel) dimensions
     var mouse = { x: null, y: null };
     var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -115,20 +116,25 @@
     }
 
     function createParticles() {
-        var w = canvas.width;
-        var h = canvas.height;
-        var n = getParticleCount(w, h);
+        var n = getParticleCount(canvasW, canvasH);
         particles = [];
         for (var i = 0; i < n; i++) {
-            particles.push(new Particle(w, h));
+            particles.push(new Particle(canvasW, canvasH));
         }
     }
 
     function resize() {
         var parent = canvas.parentElement;
         if (!parent) return;
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.offsetHeight;
+        var dpr = window.devicePixelRatio || 1;
+        canvasW = parent.offsetWidth;
+        canvasH = parent.offsetHeight;
+        // Skip if layout hasn't resolved yet (e.g. aspect-ratio not computed)
+        if (canvasW === 0 || canvasH === 0) return;
+        canvas.width  = Math.round(canvasW * dpr);
+        canvas.height = Math.round(canvasH * dpr);
+        // Scale context so all drawing uses logical CSS pixels
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         createParticles();
     }
 
@@ -175,11 +181,12 @@
     }
 
     function frame() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Clear using logical pixel dimensions (context is scaled by DPR)
+        ctx.clearRect(0, 0, canvasW, canvasH);
 
         if (!prefersReducedMotion) {
             particles.forEach(function (p) {
-                p.update(canvas.width, canvas.height, mouse.x, mouse.y);
+                p.update(canvasW, canvasH, mouse.x, mouse.y);
             });
         }
 
@@ -202,7 +209,6 @@
 
     function onTouchMove(e) {
         if (e.touches.length === 0) return;
-        e.preventDefault();
         var rect = canvas.getBoundingClientRect();
         mouse.x = e.touches[0].clientX - rect.left;
         mouse.y = e.touches[0].clientY - rect.top;
@@ -230,7 +236,7 @@
 
         canvas.addEventListener('mousemove', onMouseMove);
         canvas.addEventListener('mouseleave', onMouseLeave);
-        canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+        canvas.addEventListener('touchmove', onTouchMove, { passive: true });
         canvas.addEventListener('touchend', onTouchEnd);
 
         animId = requestAnimationFrame(frame);
