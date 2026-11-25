@@ -14,8 +14,6 @@
 
     <!-- Navigation -->
     <nav class="nav">
-       <!-- <span class="pill pill--counter">3</span> -->
-        <a href="blog/index.html" class="pill pill--ghost">Writing</a>
         <a href="#about" class="pill">Menu</a>
     </nav>
 
@@ -94,52 +92,6 @@
         </div>
     </section>
 
-    <!-- Marquee -->
-    <div class="marquee">
-        <div class="marquee__track">
-            <span class="marquee__text">Work Work Work Work Work Work&nbsp;&nbsp;&nbsp;</span>
-            <span class="marquee__text">Work Work Work Work Work Work&nbsp;&nbsp;&nbsp;</span>
-        </div>
-    </div>
-
-    <!-- Projects Section -->
-    <section class="services" id="projects">
-        <div class="services__header">
-            <span class="label-paren">(Selected Projects)</span>
-            <span class="arrow-indicator" aria-hidden="true">↘</span>
-        </div>
-        <div class="services__grid">
-            <div class="service-item">
-                <h3 class="service-item__title">Project One</h3>
-                <p class="service-item__description">Description of your first project goes here. Update this with your actual project details.</p>
-            </div>
-            <div class="service-item">
-                <h3 class="service-item__title">Project Two</h3>
-                <p class="service-item__description">Description of your second project goes here. Update this with your actual project details.</p>
-            </div>
-            <div class="service-item">
-                <h3 class="service-item__title">Project Three</h3>
-                <p class="service-item__description">Description of your third project goes here. Update this with your actual project details.</p>
-            </div>
-            <div class="service-item">
-                <h3 class="service-item__title">More Coming</h3>
-                <p class="service-item__description">Additional projects and case studies will be added here as they are completed.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Writing Section -->
-    <section class="writing-section" id="writing">
-        <div class="writing-section__header">
-            <div class="writing-section__title-row">
-                <span class="label-paren">(Writing)</span>
-                <span class="arrow-indicator" aria-hidden="true">↘</span>
-            </div>
-            <a href="blog/index.html" class="pill">All Posts</a>
-        </div>
-        <div class="writing-section__posts" id="writing-preview"></div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer">
         <span class="footer__text">&copy; 2026 Shaheer Masood</span>
@@ -147,42 +99,6 @@
     </footer>
 
     <script src="assets/js/particle-network.js"></script>
-    <script>
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#39;');
-        }
-
-        (async function () {
-            const container = document.getElementById('writing-preview');
-            try {
-                const res = await fetch('blog/posts.json');
-                if (!res.ok) return;
-                const posts = await res.json();
-                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
-                const recent = posts.slice(0, 3);
-                if (recent.length === 0) return;
-                container.innerHTML = recent.map(post => {
-                    const date = new Date(post.date + 'T00:00:00').toLocaleDateString('en-US', {
-                        year: 'numeric', month: 'long', day: 'numeric'
-                    });
-                    return `
-                        <a href="blog/post.html?post=${encodeURIComponent(post.slug)}" class="writing-preview-item">
-                            <div class="writing-preview-item__meta">
-                                <span class="writing-preview-item__title">${escapeHtml(post.title)}</span>
-                                <span class="label-paren writing-preview-item__date">(${date})</span>
-                            </div>
-                            <span class="writing-preview-item__arrow arrow-indicator" aria-hidden="true">↘</span>
-                        </a>
-                    `;
-                }).join('');
-            } catch (e) { /* silently skip if fetch fails */ }
-        })();
-    </script>
 
 </body>
 </html>
