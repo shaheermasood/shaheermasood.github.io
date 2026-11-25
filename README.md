@@ -12,12 +12,12 @@ Visit: [https://shaheermasood.github.io](https://shaheermasood.github.io)
 ├── index.html              # Main homepage
 ├── CNAME                   # Custom domain configuration
 ├── README.md               # This file
+├── blog/               # Markdown blog (not linked from the homepage)
 └── assets/
     ├── css/
     │   └── styles.css      # Website styling
-    ├── images/             # Image files (logos, photos, project screenshots)
-    ├── js/                 # JavaScript files
-    └── docs/               # Downloadable documents (resume, PDFs, etc.)
+    └── js/
+        └── particle-network.js  # Hero canvas animation
 ```
 
 ### Where to put new files
